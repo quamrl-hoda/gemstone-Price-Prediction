@@ -5,7 +5,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='[%(asctime)s]: %(message)s:')
 
 
-project_name = "mlProject"
+project_name = "gemstonePricePrediction"
 
 
 list_of_files = [
@@ -20,6 +20,8 @@ list_of_files = [
     f"src/{project_name}/entity/__init__.py",
     f"src/{project_name}/entity/config_entity.py",
     f"src/{project_name}/constants/__init__.py",
+    f"src/{project_name}/logger/__init__.py",
+    f"src/{project_name}/exception/__init__.py",
     "config/config.yaml",
     "params.yaml",
     "schema.yaml",
