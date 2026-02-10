@@ -5,6 +5,12 @@ __pycache__/
 
 # C extensions
 *.so
+mlenv/
+mlenv*
+mlenv
+artifacts*
+artifacts/
+artifacts
 
 # Distribution / packaging
 .Python
