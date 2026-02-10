@@ -1,1 +1,13 @@
-key: value
+COLUMNS:
+  carat: float
+  cut: object
+  color: object
+  clarity: object
+  depth: float
+  table: float
+  x: float
+  y: float
+  z: float
+
+TARGET_COLUMN:
+  name: price
