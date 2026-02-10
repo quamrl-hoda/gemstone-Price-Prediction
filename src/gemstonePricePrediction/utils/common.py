@@ -1,0 +1,225 @@
+import os
+import sys
+
+import numpy as np 
+import pandas as pd
+import dill
+from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+
+from src.gemstonePricePrediction.exception import CustomException
+from src.gemstonePricePrediction.logger import logging
+
+def save_object(file_path, obj):
+    try:
+        dir_path = os.path.dirname(file_path)
+
+        os.makedirs(dir_path, exist_ok=True)
+
+        with open(file_path, "wb") as file_obj:
+            dill.dump(obj, file_obj)
+
+    except Exception as e:
+        raise CustomException(e, sys)
+    
+def evaluate_models(xtrain,ytrain,xtest,ytest,models):
+    try:
+        report = {}
+        for i in range(len(models)):
+            model = list(models.values())[i]
+            # Train model
+            model.fit(xtrain,ytrain)
+
+            # Predict Training data
+            y_train_pred = model.predict(xtrain)
+
+            # Predict Testing data
+            y_test_pred =model.predict(xtest)
+
+            # Get R2 scores for train and test data
+            train_model_score = r2_score(ytrain,y_train_pred)
+            test_model_score = r2_score(ytest,y_test_pred)
+
+            report[list(models.keys())[i]] =  test_model_score
+
+        return report
+
+    except Exception as e:
+        logging.info('Exception occured during model training')
+        raise CustomException(e,sys)
+    
+def model_metrics(true, predicted):
+    try :
+        mae = mean_absolute_error(true, predicted)
+        mse = mean_squared_error(true, predicted)
+        rmse = np.sqrt(mse)
+        r2_square = r2_score(true, predicted)
+        return mae, rmse, r2_square
+    except Exception as e:
+        logging.info('Exception Occured while evaluating metric')
+        raise CustomException(e,sys)
+    
+
+def print_evaluated_results(xtrain,ytrain,xtest,ytest,model):
+    try:
+        ytrain_pred = model.predict(xtrain)
+        ytest_pred = model.predict(xtest)
+
+        # Evaluate Train and Test dataset
+        model_train_mae , model_train_rmse, model_train_r2 = model_metrics(ytrain, ytrain_pred)
+        model_test_mae , model_test_rmse, model_test_r2 = model_metrics(ytest, ytest_pred)
+
+        # Printing results
+        print('Model performance for Training set')
+        print("- Root Mean Squared Error: {:.4f}".format(model_train_rmse))
+        print("- Mean Absolute Error: {:.4f}".format(model_train_mae))
+        print("- R2 Score: {:.4f}".format(model_train_r2))
+
+        print('----------------------------------')
+    
+        print('Model performance for Test set')
+        print("- Root Mean Squared Error: {:.4f}".format(model_test_rmse))
+        print("- Mean Absolute Error: {:.4f}".format(model_test_mae))
+        print("- R2 Score: {:.4f}".format(model_test_r2))
+    
+    except Exception as e:
+        logging.info('Exception occured during printing of evaluated results')
+        raise CustomException(e,sys)
+    
+def load_object(file_path):
+    try:
+        with open(file_path,'rb') as file_obj:
+            return dill.load(file_obj)
+    except Exception as e:
+        logging.info('Exception Occured in load_object function utils')
+        raise CustomException(e,sys)
+
+
+
+import os
+from box.exceptions import BoxValueError
+import yaml
+import json
+import joblib
+from ensure import ensure_annotations
+from box import ConfigBox
+from pathlib import Path
+from typing import Any
+
+
+
+@ensure_annotations
+def read_yaml(path_to_yaml: Path) -> ConfigBox:
+    """reads yaml file and returns ConfigBox"""
+
+    try:
+        path_to_yaml = Path(path_to_yaml).resolve()
+
+        if not path_to_yaml.exists():
+            raise FileNotFoundError(f"YAML file not found at: {path_to_yaml}")
+
+        with open(path_to_yaml, "r") as yaml_file:
+            content = yaml.safe_load(yaml_file)
+
+            if content is None:
+                raise BoxValueError("YAML file is empty")
+
+            logging.info(f"yaml file loaded successfully from: {path_to_yaml}")
+            return ConfigBox(content)
+
+    except Exception as e:
+        logging.error(e)
+        raise e
+
+    
+
+
+@ensure_annotations
+def create_directories(path_to_directories: list, verbose=True):
+    """create list of directories
+
+    Args:
+        path_to_directories (list): list of path of directories
+        ignore_log (bool, optional): ignore if multiple dirs is to be created. Defaults to False.
+    """
+    for path in path_to_directories:
+        os.makedirs(path, exist_ok=True)
+        if verbose:
+            logging.info(f"created directory at: {path}")
+
+
+@ensure_annotations
+def save_json(path: Path, data: dict):
+    """save json data
+
+    Args:
+        path (Path): path to json file
+        data (dict): data to be saved in json file
+    """
+    with open(path, "w") as f:
+        json.dump(data, f, indent=4)
+
+    logging.info(f"json file saved at: {path}")
+
+
+
+
+@ensure_annotations
+def load_json(path: Path) -> ConfigBox:
+    """load json files data
+
+    Args:
+        path (Path): path to json file
+
+    Returns:
+        ConfigBox: data as class attributes instead of dict
+    """
+    with open(path) as f:
+        content = json.load(f)
+
+    logging.info(f"json file loaded succesfully from: {path}")
+    return ConfigBox(content)
+
+
+@ensure_annotations
+def save_bin(data: Any, path: Path):
+    """save binary file
+
+    Args:
+        data (Any): data to be saved as binary
+        path (Path): path to binary file
+    """
+    joblib.dump(value=data, filename=path)
+    logging.info(f"binary file saved at: {path}")
+
+
+@ensure_annotations
+def load_bin(path: Path) -> Any:
+    """load binary data
+
+    Args:
+        path (Path): path to binary file
+
+    Returns:
+        Any: object stored in the file
+    """
+    data = joblib.load(path)
+    logging.info(f"binary file loaded from: {path}")
+    return data
+
+
+
+@ensure_annotations
+def get_size(path: Path) -> str:
+    """get size in KB
+
+    Args:
+        path (Path): path of the file
+
+    Returns:
+        str: size in KB
+    """
+    size_in_kb = round(os.path.getsize(path)/1024)
+    return f"~ {size_in_kb} KB"
+
+
+
