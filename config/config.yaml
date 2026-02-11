@@ -6,7 +6,9 @@ data_ingestion:
   source_URL: https://github.com/quamrl-hoda/dataset/raw/refs/heads/main/gemstone.zip
   local_data_file: artifacts/data_ingestion/gemstone.zip
   unzip_dir: artifacts/data_ingestion
-
+  # raw_data_path: artifacts/raw.csv
+  train_data_path: artifacts/data_ingestion/train.csv
+  test_data_path: artifacts/data_ingestion/test.csv
 
 
 data_validation:
@@ -18,7 +20,9 @@ data_validation:
 
 data_transformation:
   root_dir: artifacts/data_transformation
-  data_path: artifacts/data_ingestion/gemstone.csv
+  train_data_path: artifacts/train.csv
+  test_data_path: artifacts/test.csv
+  preprocessor_obj_file_path: artifacts/data_transformation/preprocessor.pkl
 
 
 

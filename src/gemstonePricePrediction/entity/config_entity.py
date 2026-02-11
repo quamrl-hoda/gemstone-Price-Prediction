@@ -2,31 +2,30 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-@dataclass(frozen=True)
+@dataclass
 class DataIngestionConfig:
-    root_dir: Path
     source_URL: str
-    local_data_file: Path
-    unzip_dir: Path
-
-
-
+    local_data_file: str
+    unzip_dir: str
+    train_data_path: str
+    test_data_path: str
 
 
 @dataclass(frozen=True)
 class DataValidationConfig:
     root_dir: Path
-    unzip_data_dir: Path
     STATUS_FILE: str
+    unzip_data_dir: Path
     all_schema: dict
 
 
-
-
-@dataclass(frozen=True)
+@dataclass
 class DataTransformationConfig:
-    root_dir: Path
-    data_path: Path
+    root_dir: str
+    train_data_path: str
+    test_data_path: str
+    preprocessor_obj_file_path: str
+
 
 
 

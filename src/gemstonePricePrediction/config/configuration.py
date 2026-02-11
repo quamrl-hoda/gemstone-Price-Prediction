@@ -16,18 +16,20 @@ class ConfigurationManager:
         create_directories([self.config.artifacts_root])
 
 
-
     def get_data_ingestion_config(self) -> DataIngestionConfig:
         config = self.config.data_ingestion
 
         create_directories([config.root_dir])
 
         data_ingestion_config = DataIngestionConfig(
-            root_dir=Path(config.root_dir),
-            source_URL=config.source_URL,
-            local_data_file=Path(config.local_data_file),
-            unzip_dir=Path(config.unzip_dir)
-        )
+        #   root_dir=Path(config.root_dir),
+          source_URL=config.source_URL,
+          local_data_file=Path(config.local_data_file),
+          unzip_dir=Path(config.unzip_dir),
+          train_data_path=config.train_data_path,
+          test_data_path=config.test_data_path
+         )
+
 
         return data_ingestion_config
 
