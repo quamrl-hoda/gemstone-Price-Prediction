@@ -61,7 +61,7 @@ class DataIngestion:
             logging.info("Starting data ingestion process")
 
             # Read extracted dataset
-            data_file_path = os.path.join(self.config.unzip_dir, "data.csv")
+            data_file_path = os.path.join(self.config.unzip_dir, "gemstone.csv")
 
             df = pd.read_csv(data_file_path)
 
