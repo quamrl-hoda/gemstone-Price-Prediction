@@ -3,6 +3,7 @@ from src.gemstonePricePrediction.utils.common import read_yaml, create_directori
 from src.gemstonePricePrediction.entity.config_entity import DataIngestionConfig
 from src.gemstonePricePrediction.entity.config_entity import DataValidationConfig
 from src.gemstonePricePrediction.entity.config_entity import DataTransformationConfig
+from src.gemstonePricePrediction.entity.config_entity import ModelTrainerConfig
 
 
 class ConfigurationManager:
@@ -63,3 +64,22 @@ class ConfigurationManager:
         )
 
         return data_transformation_config
+
+    def get_model_trainer_config(self) -> ModelTrainerConfig:
+
+        config = self.config.model_trainer
+        params = self.params
+        schema = self.schema.TARGET_COLUMN
+
+        create_directories([config.root_dir])
+
+        model_trainer_config = ModelTrainerConfig(
+            root_dir=config.root_dir,
+            trained_model_file_path=config.trained_model_file_path,
+            train_array_path=config.train_array_path,
+            test_array_path=config.test_array_path,
+            target_column=schema.name,
+            params=params
+        )
+
+        return model_trainer_config

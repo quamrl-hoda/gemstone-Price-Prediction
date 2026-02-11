@@ -28,24 +28,23 @@ class DataTransformationConfig:
 
 
 
-
-@dataclass(frozen=True)
+@dataclass
 class ModelTrainerConfig:
-    root_dir: Path
-    train_data_path: Path
-    test_data_path: Path
-    model_name: str
-    alpha: float
-    l1_ratio: float
+    root_dir: str
+    trained_model_file_path: str
+    train_array_path: str
+    test_array_path: str
     target_column: str
+    params: dict
 
 
 
-@dataclass(frozen=True)
-class ModelEvaluationConfig:
-    root_dir: Path
-    test_data_path: Path
-    model_path: Path
-    metric_file_name: Path
-    target_column: str
-    mlflow_uri: str
+
+# @dataclass(frozen=True)
+# class ModelEvaluationConfig:
+#     root_dir: Path
+#     test_data_path: Path
+#     model_path: Path
+#     metric_file_name: Path
+#     target_column: str
+#     mlflow_uri: str

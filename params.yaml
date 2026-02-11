@@ -1,1 +1,69 @@
-key: val
+model_trainer:
+  test_size: 0.2
+  random_state: 42
+
+
+LinearRegression:
+  fit_intercept: True
+
+
+Lasso:
+  alpha: 0.01
+  max_iter: 1000
+
+
+Ridge:
+  alpha: 1.0
+
+
+DecisionTreeRegressor:
+  max_depth: 10
+  min_samples_split: 5
+
+
+RandomForestRegressor:
+  n_estimators: 200
+  max_depth: 12
+  min_samples_split: 5
+
+
+GradientBoostingRegressor:
+  n_estimators: 200
+  learning_rate: 0.05
+  max_depth: 6
+
+
+AdaBoostRegressor:
+  n_estimators: 100
+  learning_rate: 0.1
+
+
+XGBRegressor:
+  n_estimators: 300
+  learning_rate: 0.05
+  max_depth: 6
+
+
+CatBoostRegressor:
+  depth:
+    - 4
+    - 5
+    - 6
+    - 7
+  learning_rate:
+    - 0.01
+    - 0.02
+    - 0.03
+  iterations:
+    - 300
+    - 400
+    - 500
+
+
+KNeighborsRegressor:
+  n_neighbors:
+    - 5
+    - 7
+    - 9
+    - 11
+    - 15
